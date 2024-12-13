@@ -1,0 +1,33 @@
+{
+  "apartments": [
+    {
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpqdMPSUobqm-7KslN-d0gdmOgrXHThFUVsA&s",
+      "title": "Spacious Apartment",
+      "author": "John Doe",
+      "price": 1000
+    },
+    {
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpqdMPSUobqm-7KslN-d0gdmOgrXHThFUVsA&s",
+      "title": "Spacious Apartment",
+      "author": "John Doe",
+      "price": 1000,
+      "author_id": "1",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "A beautiful, spacious apartment.",
+      "id": "1734118869325"
+    },
+    {
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpqdMPSUobqm-7KslN-d0gdmOgrXHThFUVsA&s",
+      "title": "ERTOGRUL",
+      "author": "John Doe",
+      "price": 1000,
+      "author_id": "1",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "A beautiful, spacious apartment.",
+      "id": "1734118894219"
+    }
+  ],
+  "users": []
+}
