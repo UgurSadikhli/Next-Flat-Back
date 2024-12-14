@@ -27,7 +27,168 @@
       "latitude": -118.243683,
       "description": "A beautiful, spacious apartment.",
       "id": "1734118894219"
+    },
+    {
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpqdMPSUobqm-7KslN-d0gdmOgrXHThFUVsA&s",
+      "title": "home56",
+      "author": "hyh",
+      "price": 444,
+      "author_id": "1734172481964",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "A beautiful, spacious apartment.",
+      "id": "1734173037853"
+    },
+    {
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpqdMPSUobqm-7KslN-d0gdmOgrXHThFUVsA&s",
+      "title": "Sweet Home",
+      "author": "Ughur",
+      "price": 555,
+      "author_id": "1734173319668",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "A beautiful, spacious apartment.",
+      "id": "1734173382386"
+    },
+    {
+      "image": "https://example.com/image1.jpg",
+      "title": "Beautiful Penthouse",
+      "author": "Jane Doe",
+      "price": 5000,
+      "author_id": "1",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "Luxury penthouse with a stunning view.",
+      "images": [
+        "https://example.com/image2.jpg",
+        "https://example.com/image3.jpg"
+      ],
+      "country": "USA",
+      "city": "Los Angeles",
+      "id": "1734173700435"
+    },
+    {
+      "image": "https://example.com/image1.jpg",
+      "title": "Beautiful Penthouse",
+      "author": "Jane Doe",
+      "price": 5000,
+      "author_id": "1",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "Luxury penthouse with a stunning view.",
+      "images": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnnFf6DXcgRxe71BOQm1orHpnKjJloo9c2jg&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnnFf6DXcgRxe71BOQm1orHpnKjJloo9c2jg&s"
+      ],
+      "country": "USA",
+      "city": "Los Angeles",
+      "id": "1734173816783"
     }
   ],
-  "users": []
+  "users": [
+    {
+      "name": "Ugur",
+      "surname": "Sadikhli",
+      "age": 29,
+      "phone_num": "1234567890",
+      "email": "jane.doe@example.com",
+      "profile_image": "http://example.com/profile.jpg",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734173319668"
+    },
+    {
+      "image": "https://example.com/image1.jpg",
+      "title": "Beautiful Penthouse",
+      "author": "Jane Doe",
+      "price": 5000,
+      "author_id": "1",
+      "longitude": 34.052235,
+      "latitude": -118.243683,
+      "description": "Luxury penthouse with a stunning view.",
+      "images": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnnFf6DXcgRxe71BOQm1orHpnKjJloo9c2jg&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnnFf6DXcgRxe71BOQm1orHpnKjJloo9c2jg&s"
+      ],
+      "country": "USA",
+      "city": "Los Angeles",
+      "id": "1734176694417"
+    },
+    {
+      "name": "Murad",
+      "surname": "Sadikhli",
+      "age": "17",
+      "phone_num": "0506600033",
+      "email": "sadikhli.murad@gmil.com",
+      "password": "MUrad2008",
+      "confirmPassword": "MUrad2008",
+      "profile_image": "",
+      "country": "Azerbaican",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734179721357"
+    },
+    {
+      "name": "fr",
+      "surname": "frfr",
+      "age": "fr",
+      "phone_num": "frfr",
+      "email": "fr",
+      "password": "fr",
+      "confirmPassword": "fr",
+      "profile_image": "",
+      "country": "fr",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734179786060"
+    },
+    {
+      "name": "fr",
+      "surname": "fr",
+      "age": "rr",
+      "phone_num": "fr",
+      "email": "rf",
+      "password": "rr",
+      "confirmPassword": "rr",
+      "profile_image": "blob:http://localhost:3001/b15039db-5ad9-489d-ae3c-6e41f0478c38",
+      "country": "rr",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734179914365"
+    },
+    {
+      "name": "Ugur",
+      "surname": "Sadixli",
+      "age": "17",
+      "phone_num": "05066000033",
+      "email": "sadikhli.ughur12@gmail.com",
+      "password": "ugur123",
+      "confirmPassword": "ugur123",
+      "profile_image": "blob:http://localhost:3001/7c030e81-af02-48d2-a885-887a96f4a0fa",
+      "country": "Azerbaican",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734183758101"
+    },
+    {
+      "name": "Ugur",
+      "surname": "Sadixki",
+      "age": "cds",
+      "phone_num": "1213",
+      "email": "sa",
+      "password": "sa",
+      "confirmPassword": "sa",
+      "profile_image": "blob:http://localhost:3001/abab7406-03f3-4dc1-a400-73435d8b8bf6",
+      "country": "vds",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734187251811"
+    }
+  ]
 }

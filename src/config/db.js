@@ -5,17 +5,17 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Path to your db.json file
+
 const dbFilePath = path.join(__dirname, '../../db.json');
 
 // Function to read JSON data from the file
 const readDb = () => {
     try {
         const data = fs.readFileSync(dbFilePath, 'utf-8');
-        return JSON.parse(data); // Parse the JSON data
+        return JSON.parse(data); 
     } catch (error) {
         console.log("Error reading DB file:", error);
-        return { apartments: [], users: [] }; // Default data if file doesn't exist or can't be read
+        return { apartments: [], users: [] }; 
     }
 };
 
@@ -40,7 +40,7 @@ const initDb = () => {
 // Function to add an apartment to the database
 const addApartment = (apartmentData) => {
     const db = readDb();
-    const newApartment = { ...apartmentData, id: Date.now().toString() }; // Use current timestamp as unique ID
+    const newApartment = { ...apartmentData, id: Date.now().toString() }; 
     db.apartments.push(newApartment);
     writeDb(db);
     return newApartment;
@@ -49,7 +49,7 @@ const addApartment = (apartmentData) => {
 // Function to add a user to the database
 const addUser = (userData) => {
     const db = readDb();
-    const newUser = { ...userData, id: Date.now().toString() }; // Use current timestamp as unique ID
+    const newUser = { ...userData, id: Date.now().toString() }; 
     db.users.push(newUser);
     writeDb(db);
     return newUser;
@@ -79,5 +79,10 @@ const getUserById = (id) => {
     return db.users.find(user => user.id === id);
 };
 
-// Export the functions so they can be used in server.js
-export { initDb, readDb, writeDb, addApartment, addUser, getApartments, getApartmentById, getUsers, getUserById };
+const getUserByEmail = (email) => {
+    const db = readDb();
+    return db.users.find(user => user.email === email);
+};
+
+
+export { initDb, readDb, writeDb, addApartment, addUser, getApartments, getApartmentById, getUsers, getUserById,getUserByEmail };

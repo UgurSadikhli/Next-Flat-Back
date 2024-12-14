@@ -1,7 +1,10 @@
 import express from 'express';
-import { initDb, addApartment, addUser, getApartments, getApartmentById, getUsers, getUserById } from './config/db.js'; // Import DB methods
+import { initDb, addApartment, addUser, getApartments, getApartmentById, getUsers, getUserById,getUserByEmail } from './config/db.js'; // Import DB methods
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+
 
 const app = express();
 
@@ -10,20 +13,20 @@ app.use(cors({
     origin: '*',  
 }));
 
-// Use JSON body parser middleware
+
 app.use(bodyParser.json());
 
 
-// Initialize the database when the app starts
+
 initDb();
 
-// Endpoint to get all apartments
+
 app.get('/apartments', (req, res) => {
     const apartments = getApartments();
     res.json(apartments);
 });
 
-// Endpoint to get a single apartment by ID
+
 app.get('/apartments/:id', (req, res) => {
     const apartment = getApartmentById(req.params.id);
     if (apartment) {
@@ -33,19 +36,19 @@ app.get('/apartments/:id', (req, res) => {
     }
 });
 
-// Endpoint to create a new apartment
+
 app.post('/apartments', (req, res) => {
-    const newApartment = addApartment(req.body); // Add the apartment to DB
-    res.status(201).json(newApartment); // Send back the newly created apartment
+    const newApartment = addApartment(req.body); 
+    res.status(201).json(newApartment); 
 });
 
-// Endpoint to get all users
+
 app.get('/users', (req, res) => {
     const users = getUsers();
     res.json(users);
 });
 
-// Endpoint to get a single user by ID
+
 app.get('/users/:id', (req, res) => {
     const user = getUserById(req.params.id);
     if (user) {
@@ -55,11 +58,83 @@ app.get('/users/:id', (req, res) => {
     }
 });
 
-// Endpoint to create a new user
+
 app.post('/users', (req, res) => {
-    const newUser = addUser(req.body); // Add the user to DB
-    res.status(201).json(newUser); // Send back the newly created user
+    const newUser = addUser(req.body);
+    res.status(201).json(newUser); 
 });
+
+
+const JWT_SECRET = "mySuperSecretKey123!";
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+  
+ 
+  const user = getUserByEmail(email);
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid credentials name incorrect' });
+  }
+  
+
+    let isPasswordValid = false;
+
+if (password === user.password) {
+  isPasswordValid = true; 
+} else {
+  isPasswordValid = false;  
+}
+
+if (!isPasswordValid) {
+  return res.status(401).json({ message: 'Invalid credentials: password is incorrect' });
+}
+  
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: '1h', 
+    });
+  
+    res.status(200).json({ token,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.profile_image, 
+        },
+     });
+  });
+  
+
+  const verifyToken = (req, res, next) => {
+    const token = req.headers['authorization'];
+  
+    if (!token) {
+      return res.status(403).json({ message: 'No token provided' });
+    }
+  
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+      }
+      req.user = decoded; 
+      next();
+    });
+  };
+  
+ 
+  app.get('/user-profile', verifyToken, (req, res) => {
+
+    const user = users.find(u => u.id === req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({
+      id: user.id,
+      email: user.email,
+
+    });
+  });
+
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

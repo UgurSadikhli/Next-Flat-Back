@@ -18,4 +18,4 @@ router.post('/ads', async (req, res) => {
     res.json(newAd);
 });
 
-export default router; // Экспортируем как ES-модуль
+export default router;
