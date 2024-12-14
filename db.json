@@ -189,6 +189,21 @@
         "1"
       ],
       "id": "1734187251811"
+    },
+    {
+      "name": "w",
+      "surname": "w",
+      "age": "w",
+      "phone_num": "w",
+      "email": "w",
+      "password": "w",
+      "confirmPassword": "w",
+      "profile_image": "blob:http://localhost:3001/3b08fa99-806d-41d5-99c7-84b30fe3291d",
+      "country": "w",
+      "apartment_ids": [
+        "1"
+      ],
+      "id": "1734188658966"
     }
   ]
 }
