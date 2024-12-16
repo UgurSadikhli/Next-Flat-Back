@@ -1,5 +1,5 @@
 import express from 'express';
-import { initDb, addApartment, addUser, getApartments, getApartmentById, getUsers, getUserById, getUserByEmail } from './config/db.js'; // Import DB methods
+import { initDb, addApartment, addUser, getApartments,toggleApartmentForUser, getApartmentById,deleteAnnouncementById, getUsers, getUserById,deleteUserById, getUserByEmail } from './config/db.js'; // Import DB methods
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
@@ -62,6 +62,8 @@ app.get('/apartments/:id', (req, res) => {
 
 app.post('/apartments', (req, res) => {
     const newApartment = addApartment(req.body);
+    toggleApartmentForUser(newApartment.author_id, newApartment.id);
+   
     res.status(201).json(newApartment);
 });
 
@@ -76,6 +78,29 @@ app.get('/users/:id', (req, res) => {
         res.json(user);
     } else {
         res.status(404).json({ message: 'User not found' });
+    }
+});
+
+app.delete('/users/:id', (req, res) => {
+    const user = getUserById(req.params.id);
+    deleteUserById(req.params.id);
+    
+    if (user) {
+        res.status(201).json({ message: 'apartment deleted' });
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
+});
+
+app.delete('/apartments/:id', (req, res) => {
+    const apartment = getApartmentById(req.params.id);
+    deleteAnnouncementById(req.params.id);
+    toggleApartmentForUser(apartment.author_id, apartment.id);
+    
+    if (apartment) {
+        res.status(201).json({ message: 'apartment deleted' });
+    } else {
+        res.status(404).json({ message: 'apartment not found' });
     }
 });
 
@@ -142,7 +167,7 @@ app.get('/user-profile', verifyToken, (req, res) => {
     });
 });
 
-// Endpoint to upload avatar
+
 app.post('/upload-avatar', verifyToken, upload.single('avatar'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });

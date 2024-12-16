@@ -37,10 +37,56 @@ const initDb = () => {
     }
 };
 
+
+
+const toggleApartmentForUser = (userId, apartmentId) => {
+    const db = readDb(); // Чтение базы данных
+    if (!db) {
+        console.error('Failed to load database');
+        return false;
+    }
+
+    // Ищем пользователя
+    const userIndex = db.users.findIndex(user => user.id === userId);
+    if (userIndex === -1) {
+        console.error(`User with ID ${userId} not found`);
+        return false;
+    }
+
+    // Проверяем наличие массива apartment_ids
+    const user = db.users[userIndex];
+    if (!Array.isArray(user.apartment_ids)) {
+        user.apartment_ids = []; // Инициализация, если массива нет
+    }
+
+    // Если apartmentId уже есть, удаляем его, иначе добавляем
+    if (user.apartment_ids.includes(apartmentId)) {
+        // Удаление apartmentId
+        user.apartment_ids = user.apartment_ids.filter(id => id !== apartmentId);
+        console.log(`Apartment ID ${apartmentId} removed from user ID ${userId}`);
+    } else {
+        // Добавление apartmentId
+        user.apartment_ids.push(apartmentId);
+        console.log(`Apartment ID ${apartmentId} added to user ID ${userId}`);
+    }
+
+    // Пытаемся записать изменения
+    const success = writeDb(db);
+    if (!success) {
+        console.error('Failed to write to database');
+        return false;
+    }
+
+    return true;
+};
+
+
+  
 // Function to add an apartment to the database
 const addApartment = (apartmentData) => {
     const db = readDb();
     const newApartment = { ...apartmentData, id: Date.now().toString() }; 
+  
     db.apartments.push(newApartment);
     writeDb(db);
     return newApartment;
@@ -50,6 +96,7 @@ const addApartment = (apartmentData) => {
 const addUser = (userData) => {
     const db = readDb();
     const newUser = { ...userData, id: Date.now().toString() }; 
+    
     db.users.push(newUser);
     writeDb(db);
     return newUser;
@@ -79,10 +126,47 @@ const getUserById = (id) => {
     return db.users.find(user => user.id === id);
 };
 
+const deleteUserById = (id) => {
+    const db = readDb(); 
+    const userIndex = db.users.findIndex(user => user.id === id);
+  
+    if (userIndex === -1) {
+      console.log('User not found');
+      return false; 
+    }
+  
+    db.users.splice(userIndex, 1);
+  
+    writeDb(db);
+  
+    console.log(`User with ID ${id} has been deleted`);
+    return true; 
+  };
+
+  const deleteAnnouncementById = (id) => {
+    const db = readDb(); 
+    const announcementIndex = db.apartments.findIndex(apartment => apartment.id === id);
+  
+    if (announcementIndex === -1) {
+      console.log('apartment not found');
+      return false; 
+    }
+  
+    db.apartments.splice(announcementIndex, 1);
+  
+    writeDb(db);
+  
+    console.log(`apartment with ID ${id} has been deleted`);
+    return true; 
+  };
+
+
 const getUserByEmail = (email) => {
     const db = readDb();
     return db.users.find(user => user.email === email);
 };
 
 
-export { initDb, readDb, writeDb, addApartment, addUser, getApartments, getApartmentById, getUsers, getUserById,getUserByEmail };
+  
+
+export { initDb, readDb, writeDb, addApartment,toggleApartmentForUser, addUser,deleteAnnouncementById, getApartments, getApartmentById, getUsers, getUserById,getUserByEmail,deleteUserById };
