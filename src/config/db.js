@@ -167,6 +167,21 @@ const getUserByEmail = (email) => {
 };
 
 
-  
+const updateUser = (id, updates) => {
+    const db = readDb();
+    const userIndex = db.users.findIndex(user => user.id === id);
+    if (userIndex === -1) {
+        console.log(`User with ID ${id} not found`);
+        return null;
+    }
 
-export { initDb, readDb, writeDb, addApartment,toggleApartmentForUser, addUser,deleteAnnouncementById, getApartments, getApartmentById, getUsers, getUserById,getUserByEmail,deleteUserById };
+    const updatedUser = { ...db.users[userIndex], ...updates };
+    db.users[userIndex] = updatedUser;
+
+    writeDb(db);
+    console.log(`User with ID ${id} has been updated`);
+    return updatedUser;
+};
+
+
+export { initDb, readDb, writeDb, addApartment,toggleApartmentForUser, addUser,deleteAnnouncementById, getApartments, getApartmentById, getUsers, getUserById,getUserByEmail,deleteUserById,updateUser };
