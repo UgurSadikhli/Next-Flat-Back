@@ -1,5 +1,5 @@
 import express from 'express';
-import { initDb, addApartment, addUser, getApartments,toggleApartmentForUser, getApartmentById,deleteAnnouncementById, getUsers, getUserById,deleteUserById, getUserByEmail } from './config/db.js'; // Import DB methods
+import { initDb, addApartment, addUser, getApartments,toggleApartmentForUser, getApartmentById,deleteAnnouncementById, getUsers, getUserById,deleteUserById, getUserByEmail,updateUser } from './config/db.js'; // Import DB methods
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
@@ -136,6 +136,10 @@ app.post('/login', async (req, res) => {
             name: user.name,
             email: user.email,
             avatar: user.profile_image,
+            surname:user.surname,
+            age:user.age,
+            phone_num:user.phone_num,
+            fav_apartments:user.fav_apartments
         },
     });
 });
@@ -164,6 +168,7 @@ app.get('/user-profile', verifyToken, (req, res) => {
     res.status(200).json({
         id: user.id,
         email: user.email,
+
     });
 });
 
@@ -188,6 +193,19 @@ app.post('/upload-avatar', verifyToken, upload.single('avatar'), (req, res) => {
         avatarUrl,
     });
 });
+
+app.put('/update-users/:id', (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const updatedUser = updateUser(id, updates);
+    if (updatedUser) {
+        res.status(200).json(updatedUser);
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
+});
+
 
 // Serve static files in the uploads folder
 app.use('/uploads', express.static(uploadFolder));
