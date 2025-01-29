@@ -7,8 +7,8 @@ import bcrypt from 'bcryptjs';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import nodemailer from 'nodemailer';
 
-// Get the current directory path
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 
@@ -21,31 +21,137 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// Initialize database
+
+let temporaryOtp = null;
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'andrewmart1545@gmail.com', 
+        pass: 'chkojvgmrlorkvml'    
+    }
+});
+
+
 initDb();
 
-// Define a folder for storing uploads
+
 const uploadFolder = path.join(__dirname, 'uploads');
 
-// Ensure upload folder exists before handling file uploads
+
 if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
 }
 
-// Configure multer for handling file uploads
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadFolder); // Store files in the upload folder
+        cb(null, uploadFolder); 
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, uniqueSuffix + path.extname(file.originalname)); // Generate unique file names
+        cb(null, uniqueSuffix + path.extname(file.originalname)); 
     }
 });
 
+const sendEmail = async (to, subject, htmlContent) => {
+    try {
+        const mailOptions = {
+            from: 'Next Flat',
+            to,
+            subject,
+            html: htmlContent
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+};
+function generateOtpAndSendEmail(newUser) {
+    const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+  
+    // Send the OTP to the user via email
+    sendEmail(
+        newUser.email,
+        'Your OTP for Registration',
+        `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f9;
+                  padding: 20px;
+                  color: #333;
+                }
+                .email-container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  background-color: #ffffff;
+                  border-radius: 8px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  text-align: center;
+                  padding-bottom: 20px;
+                }
+                .logo {
+                  width: 150px;
+                  margin-bottom: 20px;
+                }
+                .content {
+                  font-size: 16px;
+                  line-height: 1.5;
+                  margin-bottom: 20px;
+                }
+                .otp-code {
+                  font-size: 24px;
+                  font-weight: bold;
+                  color:rgb(210, 158, 0);
+                  padding: 10px;
+                  border-radius: 5px;
+                  background-color:rgba(210, 158, 0, 0.2);
+                  display: inline-block;
+                  margin-top: 10px;
+                }
+                .footer {
+                  font-size: 14px;
+                  text-align: center;
+                  color: #888;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="email-container">
+                <div class="header">
+                  <img src="https://via.placeholder.com/150" alt="Company Logo" class="logo"/>
+                  <h1 style="color:rgb(210, 158, 0);">Hello ${newUser.name}!</h1>
+                </div>
+                <div class="content">
+                  <p>Thank you for registering with us. To complete your registration, please use the OTP (One-Time Password) provided below.</p>
+                  <p><span class="otp-code">${otp}</span></p>
+                  <p>This code will expire in 10 minutes, so please enter it promptly.</p>
+                  <p>If you didn't request this, please disregard this email.</p>
+                </div>
+                <div class="footer">
+                  <p>Best regards,</p>
+                  <p><strong>Next Flat inc.</strong></p>
+                  <p><a href="https://nextflat.my/" style="color: #0072e5; text-decoration: none;">Visit our website</a></p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `
+      );
+      
+  
+    return otp; // Return OTP to store temporarily (in memory or database)
+  }
 const upload = multer({ storage });
 
-// Routes remain unchanged
+
 app.get('/apartments', (req, res) => {
     const apartments = getApartments();
     res.json(apartments);
@@ -63,7 +169,130 @@ app.get('/apartments/:id', (req, res) => {
 app.post('/apartments', (req, res) => {
     const newApartment = addApartment(req.body);
     toggleApartmentForUser(newApartment.author_id, newApartment.id);
-   
+    const user = getUserById(newApartment.author_id);
+
+    sendEmail(
+        user.email,
+        'Your new announcement',
+        `
+  <html>
+    <head>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          color: #333;
+          margin: 0;
+          padding: 0;
+        }
+        .email-container {
+          width: 100%;
+          padding: 20px;
+          background-color: #ffffff;
+          margin: 0;
+          box-sizing: border-box;
+        }
+        .email-header {
+          background-color: #D29E00; /* Golden color */
+          padding: 20px;
+          color: white;
+          text-align: center;
+          border-radius: 10px 10px 0 0;
+        }
+        .email-header img {
+          max-width: 150px;
+          margin-bottom: 20px;
+        }
+        .email-content {
+          padding: 20px;
+          font-size: 16px;
+        }
+        .email-content h2 {
+          color: #D29E00; /* Golden color */
+          text-align: center;
+        }
+        .content-section {
+          margin-bottom: 20px;
+        }
+        .content-section label {
+          font-weight: bold;
+        }
+        .content-section p {
+          margin: 5px 0;
+        }
+        .footer {
+          text-align: center;
+          color: #666;
+          margin-top: 40px;
+        }
+        .footer a {
+          color: #D29E00;
+          text-decoration: none;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-container">
+        <div class="email-header">
+          <img src="${images[0] || ''}" alt="Company Logo">
+          <h1>Announcement for ${newApartment.title}</h1>
+        </div>
+        <div class="email-content">
+          <h2>Details of Your Property</h2>
+          <div class="content-section">
+            <label>Title:</label>
+            <p>${newApartment.title}</p>
+          </div>
+          <div class="content-section">
+            <label>Price:</label>
+            <p>${newApartment.price} ${newApartment.currency}</p>
+          </div>
+          <div class="content-section">
+            <label>Description:</label>
+            <p>${newApartment.description}</p>
+          </div>
+          <div class="content-section">
+            <label>Location:</label>
+            <p>${newApartment.city}, ${newApartment.country}</p>
+          </div>
+          <div class="content-section">
+            <label>Service Type:</label>
+            <p>${newApartment.serviceType}</p>
+          </div>
+          <div class="content-section">
+            <label>Payment Method:</label>
+            <p>${newApartment.paymentMethod}</p>
+          </div>
+          <div class="content-section">
+            <label>Room Number:</label>
+            <p>${newApartment.roomNumber}</p>
+          </div>
+          <div class="content-section">
+            <label>Area (in sq. meters):</label>
+            <p>${newApartment.kvmAmount}</p>
+          </div>
+          <div class="content-section">
+            <label>Type of Home:</label>
+            <p>${newApartment.typeOfHome}</p>
+          </div>
+          <div class="content-section">
+            <label>Street:</label>
+            <p>${newApartment.street}</p>
+          </div>
+          <div class="content-section">
+            <label>Floor:</label>
+            <p>${newApartment.flour}</p>
+          </div>
+        </div>
+        <div class="footer">
+          <p>If you have any questions, don't hesitate to <a href="mailto:support@example.com">contact us</a>.</p>
+        </div>
+      </div>
+    </body>
+  </html>
+`
+       
+      );
     res.status(201).json(newApartment);
 });
 
@@ -109,11 +338,34 @@ app.post('/users', (req, res) => {
     res.status(201).json(newUser);
 });
 
+app.post('/register', (req, res) => {
+    const newUser = req.body;
+   console.log(newUser.email);
+
+    temporaryOtp = generateOtpAndSendEmail(newUser);
+ 
+    res.status(200).json({ message: 'OTP sent to your email. Please enter it to proceed.' });
+});
+  
+app.post('/verify-otp', (req, res) => {
+   const { newUser, otp } = req.body;
+  
+if (temporaryOtp == otp) {
+      console.log(newUser);
+      const userData = addUser(newUser);
+      res.status(201).json(userData);
+} else {
+    res.status(400).json({ message: 'Invalid OTP. Please try again.' });
+}
+});
+  
+
+
 const JWT_SECRET = "mySuperSecretKey123!";
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
+  
     const user = getUserByEmail(email);
     if (!user) {
         return res.status(401).json({ message: 'Invalid credentials name incorrect' });
@@ -183,11 +435,11 @@ app.post('/upload-avatar', verifyToken, upload.single('avatar'), (req, res) => {
         return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update user's profile with the uploaded avatar URL
+    
     const avatarUrl = `/uploads/${req.file.filename}`;
     user.profile_image = avatarUrl;
 
-    // Save the updated user info in the database
+
     res.status(200).json({
         message: 'Avatar uploaded successfully',
         avatarUrl,
@@ -205,7 +457,6 @@ app.put('/update-users/:id', (req, res) => {
         res.status(404).json({ message: 'User not found' });
     }
 });
-
 
 // Serve static files in the uploads folder
 app.use('/uploads', express.static(uploadFolder));

@@ -2,5 +2,20 @@
   "apartments": [
   ],
   "users": [
+    {
+      "name": "Ugur",
+      "surname": "Sadikhli",
+      "age": "18",
+      "phone_num": "0506600033",
+      "email": "sadikhli.ughur@gmail.com",
+      "password": "us",
+      "confirmPassword": "3",
+      "profile_image": "",
+      "country": "Azerbaycan",
+      "id": "1738182025604",
+      "apartment_ids": [
+        "1738185117832"
+      ]
+    }
   ]
 }
