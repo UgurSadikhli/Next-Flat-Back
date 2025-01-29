@@ -127,7 +127,6 @@ function generateOtpAndSendEmail(newUser) {
             <body>
               <div class="email-container">
                 <div class="header">
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgNGdH6wUBTLeEpqTb-53rFi3FoaGBJywyEA&s" alt="Company Logo" class="logo"/>
                   <h1 style="color:rgb(210, 158, 0);">Hello ${newUser.name}!</h1>
                 </div>
                 <div class="content">
