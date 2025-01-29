@@ -36,6 +36,123 @@ initDb();
 
 
 const uploadFolder = path.join(__dirname, 'uploads');
+const emailTemplate = `
+  <html>
+    <head>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          color: #333;
+          margin: 0;
+          padding: 0;
+        }
+        .email-container {
+          width: 100%;
+          padding: 20px;
+          background-color: #ffffff;
+          margin: 0;
+          box-sizing: border-box;
+        }
+        .email-header {
+          background-color: #D29E00; /* Golden color */
+          padding: 20px;
+          color: white;
+          text-align: center;
+          border-radius: 10px 10px 0 0;
+        }
+        .email-header img {
+          max-width: 150px;
+          margin-bottom: 20px;
+        }
+        .email-content {
+          padding: 20px;
+          font-size: 16px;
+        }
+        .email-content h2 {
+          color: #D29E00; /* Golden color */
+          text-align: center;
+        }
+        .content-section {
+          margin-bottom: 20px;
+        }
+        .content-section label {
+          font-weight: bold;
+        }
+        .content-section p {
+          margin: 5px 0;
+        }
+        .footer {
+          text-align: center;
+          color: #666;
+          margin-top: 40px;
+        }
+        .footer a {
+          color: #D29E00;
+          text-decoration: none;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-container">
+        <div class="email-header">
+          <img src="${images[0] || ''}" alt="Company Logo">
+          <h1>Announcement for ${title}</h1>
+        </div>
+        <div class="email-content">
+          <h2>Details of Your Property</h2>
+          <div class="content-section">
+            <label>Title:</label>
+            <p>${title}</p>
+          </div>
+          <div class="content-section">
+            <label>Price:</label>
+            <p>${price} ${currency}</p>
+          </div>
+          <div class="content-section">
+            <label>Description:</label>
+            <p>${description}</p>
+          </div>
+          <div class="content-section">
+            <label>Location:</label>
+            <p>${city}, ${country}</p>
+          </div>
+          <div class="content-section">
+            <label>Service Type:</label>
+            <p>${serviceType}</p>
+          </div>
+          <div class="content-section">
+            <label>Payment Method:</label>
+            <p>${paymentMethod}</p>
+          </div>
+          <div class="content-section">
+            <label>Room Number:</label>
+            <p>${roomNumber}</p>
+          </div>
+          <div class="content-section">
+            <label>Area (in sq. meters):</label>
+            <p>${kvmAmount}</p>
+          </div>
+          <div class="content-section">
+            <label>Type of Home:</label>
+            <p>${typeOfHome}</p>
+          </div>
+          <div class="content-section">
+            <label>Street:</label>
+            <p>${street}</p>
+          </div>
+          <div class="content-section">
+            <label>Floor:</label>
+            <p>${flour}</p>
+          </div>
+        </div>
+        <div class="footer">
+          <p>If you have any questions, don't hesitate to <a href="mailto:support@example.com">contact us</a>.</p>
+        </div>
+      </div>
+    </body>
+  </html>
+`;
 
 
 if (!fs.existsSync(uploadFolder)) {
@@ -56,7 +173,7 @@ const storage = multer.diskStorage({
 const sendEmail = async (to, subject, htmlContent) => {
     try {
         const mailOptions = {
-            from: 'Next Flat',
+            from: '"Next Flat" <andrewmart1545@gmail.com>',
             to,
             subject,
             html: htmlContent
@@ -169,6 +286,8 @@ app.get('/apartments/:id', (req, res) => {
 app.post('/apartments', (req, res) => {
     const newApartment = addApartment(req.body);
     toggleApartmentForUser(newApartment.author_id, newApartment.id);
+    const user = getUserById(newApartment.author_id);
+    sendEmail(user.email, 'New Property Announcement', emailTemplate);
     res.status(201).json(newApartment);
 });
 
